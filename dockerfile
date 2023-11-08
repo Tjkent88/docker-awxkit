@@ -30,7 +30,7 @@ RUN apt-get remove -y unzip curl gnupg && apt-get autoremove -y && apt-get clean
 # Create a non-root user
 RUN addgroup builder && adduser --system --ingroup builder builder
 
-# Switch to the non-root user
+# Switch to the non-root user.
 USER builder
 
 # Set a working directory
