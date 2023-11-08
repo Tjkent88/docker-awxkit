@@ -1,10 +1,39 @@
 # Use the official Python image as the base image
 FROM python:3.9.18-slim-bullseye
+
+# Create a directory to store the fonts
+RUN mkdir -p /usr/share/fonts/nerd-fonts
+
 # Install required packages
 RUN apt-get update && apt-get install -y \
     unzip \
     curl \
-    gnupg
+    gnupg \
+    fontconfig \
+    zsh
+
+# Download the Nerd Fonts from the URL
+RUN curl -fsSL -o /tmp/nerd-fonts.zip https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/FiraCode.zip
+
+# Unzip and copy the fonts to the appropriate directory
+RUN unzip /tmp/nerd-fonts.zip -d /usr/share/fonts/nerd-fonts/ && rm /tmp/nerd-fonts.zip
+
+# Update the font cache
+RUN fc-cache -fv
+
+# Uses "Spaceship" theme with some customization. Uses some bundled plugins and installs some more from github
+RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.1.5/zsh-in-docker.sh)" -- \
+    -t https://github.com/denysdovhan/spaceship-prompt \
+    -a 'SPACESHIP_PROMPT_ADD_NEWLINE="false"' \
+    -a 'SPACESHIP_PROMPT_SEPARATE_LINE="false"' \
+    -p git \
+    -p ssh-agent \
+    -p https://github.com/zsh-users/zsh-autosuggestions \
+    -p https://github.com/zsh-users/zsh-completions
+
+# Add .zshrc file to the container for root and builder
+COPY .zshrc /home/builder/.zshrc
+COPY .zshrc /root/.zshrc
 
 # Download and add the GitHub CLI archive keyring
 RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
@@ -15,8 +44,8 @@ RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/g
 # Update the package list and install GitHub CLI
 RUN apt-get update && apt-get install -y gh
 
-# Install awxkit using pip
-RUN pip install awxkit ansible-tower-cli
+# Install pipx for ansible
+RUN pip install ansible ansible-tower-cli boto3 awxkit
 
 # Download and install awscliv2
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
