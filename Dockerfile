@@ -5,6 +5,7 @@ FROM python:3.9.18-slim-bullseye
 RUN apt-get update && apt-get install -y \
     unzip \
     curl \
+    gh \
     && rm -rf /var/lib/apt/lists/*
 
 # Install awxkit using pip
