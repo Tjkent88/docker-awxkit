@@ -3,7 +3,7 @@ FROM python:latest
 
 RUN pip install --upgrade pip
 
-# Create a directory to store the fonts
+# Create a directory to store the fontscurl -sS https://starship.rs/install.sh | sh
 RUN mkdir -p /usr/share/fonts/nerd-fonts
 
 # Install required packages
@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     gnupg \
     fontconfig \
+    nano \
     zsh
 
 # Download the Nerd Fonts from the URL
@@ -56,7 +57,7 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     && rm awscliv2.zip
 
 # Clean up
-RUN apt-get remove -y unzip curl gnupg && apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get remove -y unzip gnupg && apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Create a non-root user
 RUN addgroup builder && adduser --system --ingroup builder builder
@@ -65,10 +66,10 @@ RUN addgroup builder && adduser --system --ingroup builder builder
 USER builder
 
 # Set a working directory
-WORKDIR /app
+WORKDIR /repos
 
-# Example command to run as the non-root user
-CMD ["/bin/sh"]
+# Keep the container running with an infinite loop
+CMD ["sh", "-c", "while true; do sleep 3600; done"]
 
 # You can add additional commands or configurations as needed
 
