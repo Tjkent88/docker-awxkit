@@ -1,6 +1,8 @@
 # Use the official Python image as the base image
 FROM python:3.9.18-slim-bullseye
 
+RUN pip install --upgrade pip
+
 # Create a directory to store the fonts
 RUN mkdir -p /usr/share/fonts/nerd-fonts
 
@@ -45,7 +47,7 @@ RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/g
 RUN apt-get update && apt-get install -y gh
 
 # Install pipx for ansible
-RUN pip install ansible ansible-tower-cli boto3 awxkit
+RUN pip install ansible ansible-tower-cli boto3 awxkit setuptools
 
 # Download and install awscliv2
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
