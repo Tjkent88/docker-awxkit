@@ -2,7 +2,7 @@
 version: '3'
 services:
   my-service:
-    container_name: awxkit
+    container_name: container_env
     image: tjkent88/docker-awxkit:test-latest
     volumes:
       - /home/tkent/repos:/repos
