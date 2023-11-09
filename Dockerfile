@@ -1,5 +1,5 @@
 # Use the official Python image as the base image
-FROM python:3.9.18-slim-bullseye
+FROM python:latest
 
 RUN pip install --upgrade pip
 
